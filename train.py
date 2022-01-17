@@ -17,7 +17,7 @@ def parsing():
     parser.add_argument('--epoch', '--e', type=int, default=100)
     parser.add_argument('--lr_rate', '--lr', type=float, default=1e-3)
     parser.add_argument('--warmup', type=int, default=30)
-    parser.add_argument('--batch-size', '--b', type=int, default=2048)
+    parser.add_argument('--batch-size', '--b', type=int, default=512)
     parser.add_argument('--device', type=str, default='cuda')
     parser.add_argument('--optimizer', '--opt', type=str, default='Adam')
     parser.add_argument('--save_loss', type=str, default='runs/loss/out.csv')
@@ -62,7 +62,7 @@ def train(opt):
     net = Net(opt.classnum)
     net.to(device)
     criterion = nn.CrossEntropyLoss()
-    #optimizer = optim.Adam(params=net.parameters(), lr=Learning_rate)
+    
     if opt.optimizer == 'Adam':
         optimizer = optim.Adam([ {'params':net.parameters(), 'lr':init_lr}], lr=Learning_rate)
     elif opt.optimizer == 'AdamW':
@@ -80,7 +80,8 @@ def train(opt):
         val_hit = 0
         train_hit = 0
         train_image_num = 0
-        a = 0
+        
+        #learning rate scheduling
         if epoch <= warm_up_epoch:
             optimizer.param_groups[0]['lr']= (Learning_rate - init_lr)/(warm_up_epoch-1) * (epoch-1) + init_lr
         elif epoch == 75:
@@ -89,6 +90,7 @@ def train(opt):
             optimizer.param_groups[0]['lr']*= 0.01
 
         print(f'lr: %8.5f'%(optimizer.param_groups[0]['lr']))
+
         for i, data in enumerate(tqdm((trainloader))):
             inputs, labels = data['Data'].to(device), data['Label'].to(device)
 
@@ -123,9 +125,7 @@ def train(opt):
                 for i in range(len(outputs)):
                     if(np.argmax(outputs[i].cpu().detach().numpy())==labels[i]):
                         val_hit += 1
-
-        #lr_sche1.step(epoch)
-        #lr_sche2.step(epoch)
+        
         print('Epoch:%3d'%epoch, '|Train Loss:%8.4f'%(running_loss/train_batch_num), '|Train Acc:%3.4f'%(train_hit/(train_image_num)*100.0))
         print('Epoch:%3d'%epoch, '|Valid Loss:%8.4f'%(val_loss/valid_batch_num), '|Valid Acc:%3.4f'%(val_hit/(val_image_num)*100.0))
         val_acc.append((val_hit/(val_image_num)*100.0))
