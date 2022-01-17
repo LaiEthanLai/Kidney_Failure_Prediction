@@ -1,14 +1,13 @@
-import string
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import DataLoader
 import numpy as np
-import math
 from model.net import Net
 from dataset.dataset import Kidney_Dataset
 import argparse
 import pandas as pd 
+from tqdm import tqdm
 
 def parsing():
     parser = argparse.ArgumentParser()
@@ -20,9 +19,9 @@ def parsing():
     parser.add_argument('--warmup', type=int, default=30)
     parser.add_argument('--batch-size', '--b', type=int, default=2048)
     parser.add_argument('--device', type=str, default='cuda')
-    parser.add_argument('--optimzer', '--opt', type=string, default='Adam')
-    parser.add_argument('--save-loss', type=str, default='runs/loss/out.csv')
-    parser.add_argument('--save-acc', type=str, default='runs/acc/out.csv')
+    parser.add_argument('--optimizer', '--opt', type=str, default='Adam')
+    parser.add_argument('--save_loss', type=str, default='runs/loss/out.csv')
+    parser.add_argument('--save_acc', type=str, default='runs/acc/out.csv')
 
     opt = parser.parse_args()
     return opt
@@ -63,17 +62,18 @@ def train(opt):
     net = Net(opt.classnum)
     net.to(device)
     criterion = nn.CrossEntropyLoss()
+    #optimizer = optim.Adam(params=net.parameters(), lr=Learning_rate)
     if opt.optimizer == 'Adam':
         optimizer = optim.Adam([ {'params':net.parameters(), 'lr':init_lr}], lr=Learning_rate)
     elif opt.optimizer == 'AdamW':
         optimizer = optim.AdamW([ {'params':net.parameters(), 'lr':init_lr}], lr=Learning_rate)
     elif opt.optimizer == 'SGD':
-        optimizer = optim.SGD({'params':net.parameters(), 'lr':init_lr}, lr=Learning_rate)
+        optimizer = optim.SGD([ {'params':net.parameters(), 'lr':init_lr}], lr=Learning_rate, momentum=0.9)
 
     loss_pack = []
     val_acc = []
 
-    for epoch in range(1, EPOCH+1):
+    for epoch in (range(1, EPOCH+1)):
         running_loss = 0.0
         val_loss = 0.0
         val_image_num = 0
@@ -88,8 +88,8 @@ def train(opt):
         elif epoch == 100:
             optimizer.param_groups[0]['lr']*= 0.01
 
-        print(optimizer.param_groups[0]['lr'])
-        for i, data in enumerate(trainloader):
+        print(f'lr: %8.5f'%(optimizer.param_groups[0]['lr']))
+        for i, data in enumerate(tqdm((trainloader))):
             inputs, labels = data['Data'].to(device), data['Label'].to(device)
 
             optimizer.zero_grad()
