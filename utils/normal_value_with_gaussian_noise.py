@@ -49,17 +49,17 @@ interpolate = {1:[1.0, 0.9], 2:[3.95, 3.95], 3:[141, 141], 4:[13.5, 13.5], 5:[15
                11:[6, 4.45], 12:[9.45, 9.45], 13:[200, 200], 14:[180.5, 158.9], 15:[150, 150], \
                16:[96.59442943, 96.59442943], 17:[5, 5], 18:[6.5, 6.5], 19:[60, 60], 20:[100, 100], \
                21:[150, 150]}
-
+#dict = {column of data : [mean value filling for male, mean value filling for female]}
 
 data_np = np.array(data_list)
 data_mean = np.nanmean(data_np, axis=0)
-data_var = np.nanmean(np.power((data_np - np.nanmean(data_np, axis=0)), 2), axis=0)
+data_var = np.nanmean(np.power((data_np - np.nanmean(data_np, axis=0)), 2), axis=0) # we compute the var and mean of the gaussian function 
 
 for i in range(data_np.shape[0]):
     sex = data_list[i][-1]
     for j in range(data_np.shape[1]-1):
         if math.isnan(data_np[i][j]) is True:
-            data_np[i][j] = interpolate[j+1][sex] + np.random.normal(data_mean[j], data_var[j])
+            data_np[i][j] = interpolate[j+1][sex] + np.random.normal(data_mean[j], data_var[j]) # we add gaussian signal as a noise function which add to origin value
 
 data_list = ((data_np - data_mean)/(data_var+0.0008)).tolist()
 

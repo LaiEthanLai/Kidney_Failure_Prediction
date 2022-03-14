@@ -3,7 +3,8 @@ import numpy as np
 import math
 from operator import add
 
-def time_substraction(examine_date: str, pivot: str) -> int:
+def time_substraction(examine_date: str, pivot: str) -> int: ## calculate the difference between two dates 
+
     e_year, e_month, e_date = examine_date.split('-')
     p_year, p_month, p_date = pivot.split('-')
     return np.round( ( ( 365*int(p_year) + 30*int(p_month) + int(p_date))  - \
@@ -11,7 +12,7 @@ def time_substraction(examine_date: str, pivot: str) -> int:
 
 specific_features = ['PERSONID2' , 'LABDATE', 'B_CRE', 'B_K', 'B_NA', 'B_UN', 'Hemoglobin',
                     'MCHC', 'PLT', 'WBC', 'Albumin', 'B_P', 'B_UA',
-                    'Calcium', 'Triglyceride', 'LDL', 'UPCR']
+                    'Calcium', 'Triglyceride', 'LDL', 'UPCR'] # we keep those specific features of lab.csv
 
 ckd = pd.read_csv('raw_data/new_ckd.csv', usecols=['PERSONID2','SEX', 'END_DATE1', 'OUTC1'])
 lab = pd.read_csv('raw_data/new_lab.csv', usecols=specific_features)
@@ -41,10 +42,10 @@ for item in lab_list:
         sex, checkdate = ckd_dict[item[0]][0:2]
         interval = time_substraction(item[1], checkdate) #return end_date - checkdate
         interval = int(interval)
-        if interval < 0:
+        if interval < 0: # labeling the data to 0~7
             lab_list.remove(item)
             continue
-        elif interval > 5 and interval <= 10:
+        elif interval > 5 and interval <= 10: 
             interval = 6
         elif interval > 10:
             interval = 7
@@ -53,17 +54,20 @@ for item in lab_list:
         p = [item[0]] + item[2:]
         data_list.append([item[0]] + item[2:])
 
-personal_wise_mean = {} # key:name -> value:mean of 16 variables
-pre_name = data_list[0][0]
-personal = []
-count_number = [0] * 16
-submatix_head = 0
-submatrix_tail = 0
+
 
 
 
 ######### start computing mean #########
 print("start computing mean")
+# we compute the personal wise mean of each data and store in the personal_wise_mean{} dictionary
+
+
+personal_wise_mean = {} # key:name -> value:mean of 16 variables
+pre_name = data_list[0][0]
+personal = []
+submatix_head = 0
+submatrix_tail = 0
 
 for i in range(len(data_list)):
     cur_name = data_list[i][0]
@@ -94,6 +98,7 @@ print("start filling mean")
 interpolate = {1:[1.0, 0.9], 2:[3.95, 3.95], 3:[141, 141], 4:[13.5, 13.5], 5:[15.5, 13.5], \
                6:[34.3, 34.4], 7:[267, 267], 8:[6.3, 6.3], 9:[4.6, 4.6], 10:[3.75, 3.75],  \
                11:[6, 4.45], 12:[9.45, 9.45], 13:[150, 150], 14:[100, 100],15:[150, 150]}
+#dict = {column of data : [mean value filling for male, mean value filling for female]}
                
 for i in range(len(data_list)):
     cur_name = data_list[i][0]
@@ -109,7 +114,7 @@ data_mean = np.nanmean(data_list, axis=0)
 data_var = np.nanmean(np.power((data_list - np.nanmean(data_list, axis=0)), 2), axis=0)
 data_list = ((data_list - data_mean)/(data_var+0.0008)).tolist()
 
-
+#dump the result to csv file
 df_label = pd.DataFrame(intervals)
 df_data = pd.DataFrame(data_list)
 pd.DataFrame.to_csv(df_data, 'preprocessed_data/ftcapp_data.csv', index = False,header = False)

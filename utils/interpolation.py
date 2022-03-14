@@ -25,8 +25,7 @@ lab_list = lab.values.tolist()
 
 
 
-
-######### start deleting #########
+######### start deleting & labeling #########
 print("start deleting")
 
 
@@ -45,7 +44,7 @@ for item in lab_list:
         interval = time_substraction(item[1], checkdate) #return end_date - checkdate
         interval = int(interval)
         if interval < 0:
-            lab_list.remove(item)
+            lab_list.remove(item) #delete the data which end_data < checkdate
             continue
         elif interval > 5 and interval <= 10:
             interval = 6
@@ -58,14 +57,16 @@ for item in lab_list:
 
 personal_wise_mean = {} # key:name -> value:mean of 16 variables
 pre_name = data_list[0][0]
-interpolated = np.array([])
-submatix_head = 0
-submatrix_tail = 0
+
 
 
 
 ######### start interpolating #########
 print("start interpolating")
+
+interpolated = np.array([]) # the final interpolarting result stores here
+submatix_head = 0
+submatrix_tail = 0
 
 for i in range(len(data_list)):
     cur_name = data_list[i][0]
@@ -86,7 +87,7 @@ for i in range(len(data_list)):
                 for j in range(len(subarray)):
                     
                     if j > 1 and j < len(subarray)-2:
-                        subarray[j][k] = (subarray[j-2][k] + subarray[j-1][k] + subarray[j][k] + subarray[j+1][k] + subarray[j+2][k])/5
+                        subarray[j][k] = (subarray[j-2][k] + subarray[j-1][k] + subarray[j][k] + subarray[j+1][k] + subarray[j+2][k])/5 # add the moving average filter for the nearest five data (optional)
         if interpolated.size == 0:
             interpolated = subarray
         else:
@@ -101,6 +102,7 @@ print("start filling")
 interpolate = { 1:[1.0, 0.9], 2:[3.95, 3.95], 3:[141, 141], 4:[13.5, 13.5], 5:[15.5, 13.5], \
                6:[34.3, 34.4], 7:[267, 267], 8:[6.3, 6.3], 9:[4.6, 4.6], 10:[3.75, 3.75],  \
                11:[6, 4.45], 12:[9.45, 9.45], 13:[150, 150], 14:[100, 100], 15:[150, 150] }
+#dict = {column of data : [mean value filling for male, mean value filling for female]}
 
 interpolated = interpolated.tolist()
 for i in range(len(interpolated)):
