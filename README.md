@@ -26,7 +26,7 @@ While experiencing a severe data missing problem with these metrics, we applied 
 
 ### Model
 
-A 10-layer MLP with an input dimension of 16 and an output dimension of X. X refers to the number of classes we'd like to divide our result into. For example, we categorize patients based on whether they will develop kidney disease within two years. Those who will are placed in one category, while those who won't are placed in another. As such, we let X=2.
+A 10-layer MLP with an input dimension of 16 and an output dimension of X. X refers to the number of classes we'd like to divide our result into. For example, we categorize patients based on whether they will develop kidney disease within two years. Those who will are placed in one category, while those who won't are placed in another. In this case, we set X=2.
 
 
 
