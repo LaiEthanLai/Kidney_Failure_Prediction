@@ -1,6 +1,6 @@
 # Kidney Failure Prediction Using a DNN
 > [!IMPORTANT]
-> We thank patients willing to participate in this project and generously share their data. We genuinely respect their privacy, so we will not release our dataset or the weights of our DNN. 
+> We thank the patients who participated in this project and generously share their data. We genuinely respect their privacy, so we will not release our dataset or the weights of our DNN. 
 
 
 This project involves Professor [Feng-Tsun Chien](https://sites.google.com/nycu.edu.tw/ftchien/home?authuser=0) from the Institute of Electronics and the Institute of Artificial Intelligence Innovation, National Yang Ming Chiao Tung University (NYCU), his two affiliated research assistants [Ethan Lai](https://github.com/LaiEthanLai) and [Sam Wang](https://github.com/SamWang0807), and the Department of Internal Medicine -- Nephrology at National Taiwan University Hospital. 
