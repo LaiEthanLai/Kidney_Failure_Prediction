@@ -12,12 +12,29 @@ In `utils`, we implement three imputation methods to mitigate the missing data p
 The DNN we adopt is in `model/net.py`.
 
 ## Methods
+### Data Preprocessing
 We use various biometrics as inputs for prediction: 
 
 B_CRE, B_K, B_NA, B_UN, Hemoglobin, MCHC, PLT, WBC, Albumin, B_P, B_UA, Calcium, Triglyceride, DL, UPCR. 
 
 These are common metrics a doctor will refer to when diagonizing a patient.
-
+While experiencing a severe data missing problem on those metrics, we applied 3 different kinds of imputation strategies to fit the input shape of our model and 
 We elaborate on the three imputation methods as follows:
 
 TBD
+
+
+## Installation
+To get started with our kidney project, clone this repository and install the required dependencies:
+```shell
+$git clone git@github.com:LaiEthanLai/Project_Kidney.git
+$cd ./Project_Kidney
+$pip install -r requirements.txt
+
+```
+
+
+## Training
+```shell
+$python train.py
+```
