@@ -20,13 +20,13 @@ We use various biometrics as inputs for prediction:
 B_CRE, B_K, B_NA, B_UN, Hemoglobin, MCHC, PLT, WBC, Albumin, B_P, B_UA, Calcium, Triglyceride, DL, UPCR. 
 
 These are common metrics a doctor will refer to when diagonizing a patient.
-While experiencing a severe data missing problem on those metrics, we applied 3 different kinds of imputation strategies to our dataset and compare their results. We also implemented average moving filter to attain data smoothing and reduce noise. 
+While experiencing a severe data missing problem with these metrics, we applied 3 types of imputation strategies to our dataset and compare their results. We also implemented an average moving filter to achieve data smoothing and reduce noise. 
 
 
 
 ### Model
 
-10-layer MLP with input dimension 16 and output dimension X. X refers to the class number that we want to divide our result in. For example, we categorize patients based on whether they will develop kidney disease within two years. Those who will are placed in one category, while those who won't are placed in another. As such, we let X=2.
+A 10-layer MLP with an input dimension of 16 and an output dimension of X. X refers to the number of classes we'd like to divide our result into. For example, we categorize patients based on whether they will develop kidney disease within two years. Those who will are placed in one category, while those who won't are placed in another. As such, we let X=2.
 
 
 
